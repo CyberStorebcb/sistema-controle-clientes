@@ -106,6 +106,23 @@ git commit -m "Descrição das mudanças"
 git push
 ```
 
+## 🌐 Deploy no Vercel
+
+### Deploy Automático:
+
+1. Acesse: https://vercel.com
+2. Conecte com GitHub
+3. Importe o repositório: `sistema-controle-clientes`
+4. Deploy automático será configurado!
+
+### Configurações:
+
+- **Build Command:** `npm run build`
+- **Output Directory:** `dist/spa`
+- **Framework:** Other (auto-detectado)
+
+📖 **Guia completo:** Veja `DEPLOY-VERCEL.md`
+
 ## 🏃‍♂️ Scripts Disponíveis
 
 ```bash
@@ -133,13 +150,3 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 **CyberStorebcb**
 
 - GitHub: [@CyberStorebcb](https://github.com/CyberStorebcb)
-
-### Build the app for production
-
-```bash
-quasar build
-```
-
-### Customize the configuration
-
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
