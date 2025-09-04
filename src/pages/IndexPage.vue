@@ -1,124 +1,252 @@
 <template>
   <q-page :class="pageClass">
-    <div class="text-center">
-      <!-- Foto de perfil ou ícone padrão -->
-      <div class="q-mb-xl profile-section">
-        <div class="profile-container" @click="mostrarDialogFoto">
-          <q-avatar v-if="fotoPerfil" size="200px" class="profile-avatar cursor-pointer shadow-10">
-            <img :src="fotoPerfil" alt="Foto de perfil" class="profile-image" />
-            <div class="avatar-overlay">
-              <q-icon name="edit" size="2.5rem" color="white" />
-              <div class="overlay-text">Editar</div>
+    <!-- Header Section com informações principais -->
+    <div class="main-container">
+      <!-- Seção de Perfil e Boas-vindas -->
+      <div class="header-section q-pa-lg">
+        <div class="row items-center justify-between">
+          <!-- Perfil e Boas-vindas -->
+          <div class="col-12 col-md-6 profile-welcome-section">
+            <div class="profile-container q-mb-md" @click="mostrarDialogFoto">
+              <q-avatar v-if="fotoPerfil" size="120px" class="profile-avatar cursor-pointer shadow-10">
+                <img :src="fotoPerfil" alt="Foto de perfil" class="profile-image" />
+                <div class="avatar-overlay">
+                  <q-icon name="edit" size="1.5rem" color="white" />
+                </div>
+              </q-avatar>
+
+              <q-avatar
+                v-else
+                size="120px"
+                :color="avatarColor"
+                :text-color="avatarTextColor"
+                class="profile-avatar cursor-pointer shadow-10"
+              >
+                <q-icon name="person" size="3rem" />
+                <div class="avatar-overlay">
+                  <q-icon name="add_a_photo" size="1.5rem" color="white" />
+                </div>
+              </q-avatar>
             </div>
-          </q-avatar>
 
-          <q-avatar
-            v-else
-            size="200px"
-            :color="avatarColor"
-            :text-color="avatarTextColor"
-            class="profile-avatar cursor-pointer shadow-10"
-          >
-            <q-icon name="person" size="6rem" />
-            <div class="avatar-overlay">
-              <q-icon name="add_a_photo" size="2.5rem" color="white" />
-              <div class="overlay-text">Adicionar Foto</div>
+            <div class="welcome-text-container">
+              <h1 :class="welcomeTextClass">
+                Bem-vinda, <span class="naty-name">Naty</span>
+              </h1>
+              <p :class="subtitleClass">
+                <q-icon name="business" class="q-mr-sm" />
+                Sistema de Controle de Clientes
+              </p>
             </div>
-          </q-avatar>
-        </div>
+          </div>
 
-        <p :class="subtitleTextClass">
-          {{
-            fotoPerfil
-              ? 'Clique para alterar sua foto de perfil'
-              : 'Clique para adicionar uma foto de perfil'
-          }}
-        </p>
-      </div>
-
-      <!-- Mensagem de boas-vindas melhorada -->
-      <div class="welcome-container q-mb-xl">
-        <h1 :class="welcomeTextClass">
-          Bem-vinda,
-          <span class="naty-name">Naty</span>
-        </h1>
-        <div class="subtitle-container">
-          <p :class="subtitleClass">
-            <q-icon name="business" class="q-mr-sm" />
-            Sistema de Controle de Clientes
-          </p>
-          <div class="status-indicator q-mb-lg">
-            <q-chip color="green" text-color="white" icon="check_circle" class="q-px-md">
-              Sistema Online
-            </q-chip>
+          <!-- Status e Informações do Sistema -->
+          <div class="col-12 col-md-6 system-info-section">
+            <div class="system-status-card">
+              <div class="status-header">
+                <q-chip color="green" text-color="white" icon="check_circle" class="status-chip">
+                  Sistema Online
+                </q-chip>
+                <div class="time-info">
+                  <p :class="timeTextClass">
+                    <q-icon name="schedule" class="q-mr-xs" />
+                    {{ horaAtual }}
+                  </p>
+                  <p :class="dateTextClass">
+                    <q-icon name="today" class="q-mr-xs" />
+                    {{ dataAtual }}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Botões de ação melhorados -->
-      <div class="action-buttons q-gutter-md q-mb-xl">
-        <q-btn
-          push
-          size="lg"
-          :color="$q.dark.isActive ? 'white' : 'primary'"
-          :text-color="$q.dark.isActive ? 'primary' : 'white'"
-          icon="people"
-          label="Gerenciar Clientes"
-          class="q-px-xl q-py-md action-btn"
-          @click="navegarParaClientes"
-        />
+      <!-- Seção de Estatísticas Principais -->
+      <div class="stats-section q-pa-lg">
+        <div class="section-title q-mb-lg">
+          <h3 :class="sectionTitleClass">
+            <q-icon name="analytics" class="q-mr-sm" />
+            Resumo do Sistema
+          </h3>
+        </div>
 
-        <q-btn
-          outline
-          size="lg"
-          :color="$q.dark.isActive ? 'white' : 'secondary'"
-          :text-color="$q.dark.isActive ? 'white' : 'secondary'"
-          icon="analytics"
-          label="Ver Estatísticas"
-          class="q-px-xl q-py-md action-btn"
-          @click="mostrarEstatisticas"
-        />
+        <div class="row q-gutter-lg justify-center">
+          <div class="col-12 col-sm-6 col-md-3">
+            <q-card flat :class="statsCardClass" class="stat-card">
+              <q-card-section class="text-center">
+                <div class="stat-icon-container q-mb-sm">
+                  <q-icon name="people_outline" size="2.5rem" class="stat-icon" />
+                </div>
+                <div :class="statNumberClass">{{ totalClientes }}</div>
+                <div :class="statLabelClass">Total de Clientes</div>
+                <q-linear-progress
+                  :value="totalClientes / 100"
+                  color="blue-5"
+                  class="q-mt-sm"
+                  size="4px"
+                  rounded
+                />
+              </q-card-section>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <q-card flat :class="statsCardClass" class="stat-card">
+              <q-card-section class="text-center">
+                <div class="stat-icon-container q-mb-sm">
+                  <q-icon name="check_circle" size="2.5rem" class="stat-icon green" />
+                </div>
+                <div :class="statNumberClass">{{ clientesConcluidos }}</div>
+                <div :class="statLabelClass">Concluídos</div>
+                <q-linear-progress
+                  :value="clientesConcluidos / Math.max(totalClientes, 1)"
+                  color="green-5"
+                  class="q-mt-sm"
+                  size="4px"
+                  rounded
+                />
+              </q-card-section>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <q-card flat :class="statsCardClass" class="stat-card">
+              <q-card-section class="text-center">
+                <div class="stat-icon-container q-mb-sm">
+                  <q-icon name="schedule" size="2.5rem" class="stat-icon orange" />
+                </div>
+                <div :class="statNumberClass">{{ clientesPendentes }}</div>
+                <div :class="statLabelClass">Pendentes</div>
+                <q-linear-progress
+                  :value="clientesPendentes / Math.max(totalClientes, 1)"
+                  color="orange-5"
+                  class="q-mt-sm"
+                  size="4px"
+                  rounded
+                />
+              </q-card-section>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <q-card flat :class="statsCardClass" class="stat-card">
+              <q-card-section class="text-center">
+                <div class="stat-icon-container q-mb-sm">
+                  <q-icon name="trending_up" size="2.5rem" class="stat-icon purple" />
+                </div>
+                <div :class="statNumberClass">{{ percentualConclusao }}%</div>
+                <div :class="statLabelClass">Taxa de Conclusão</div>
+                <q-linear-progress
+                  :value="percentualConclusao / 100"
+                  color="purple-5"
+                  class="q-mt-sm"
+                  size="4px"
+                  rounded
+                />
+              </q-card-section>
+            </q-card>
+          </div>
+        </div>
       </div>
 
-      <!-- Cards informativos melhorados -->
-      <div class="row justify-center q-mt-xl q-gutter-md">
-        <div class="col-auto">
-          <q-card flat :class="cardClass" style="min-width: 220px">
-            <q-card-section class="text-center">
-              <q-icon name="people_outline" size="2.5rem" class="q-mb-sm" color="blue-5" />
-              <div :class="cardTextClass">{{ totalClientes }}</div>
-              <div :class="cardSubtitleClass">Clientes Cadastrados</div>
-            </q-card-section>
-          </q-card>
+      <!-- Seção de Ações Principais -->
+      <div class="actions-section q-pa-lg">
+        <div class="section-title q-mb-lg">
+          <h3 :class="sectionTitleClass">
+            <q-icon name="dashboard" class="q-mr-sm" />
+            Ações Rápidas
+          </h3>
         </div>
 
-        <div class="col-auto">
-          <q-card flat :class="cardClass" style="min-width: 220px">
-            <q-card-section class="text-center">
-              <q-icon name="check_circle" size="2.5rem" class="q-mb-sm" color="green-5" />
-              <div :class="cardTextClass">{{ clientesConcluidos }}</div>
-              <div :class="cardSubtitleClass">Concluídos</div>
-            </q-card-section>
-          </q-card>
-        </div>
+        <div class="row q-gutter-md justify-center">
+          <div class="col-auto">
+            <q-btn
+              push
+              size="xl"
+              color="primary"
+              text-color="white"
+              icon="people"
+              label="Gerenciar Clientes"
+              class="action-btn primary-action"
+              @click="navegarParaClientes"
+            />
+          </div>
 
-        <div class="col-auto">
-          <q-card flat :class="cardClass" style="min-width: 220px">
-            <q-card-section class="text-center">
-              <q-icon name="schedule" size="2.5rem" class="q-mb-sm" color="orange-5" />
-              <div :class="cardTextClass">{{ clientesPendentes }}</div>
-              <div :class="cardSubtitleClass">Pendentes</div>
-            </q-card-section>
-          </q-card>
+          <div class="col-auto">
+            <q-btn
+              push
+              size="xl"
+              color="secondary"
+              text-color="white"
+              icon="analytics"
+              label="Ver Estatísticas"
+              class="action-btn secondary-action"
+              @click="mostrarEstatisticas"
+            />
+          </div>
+
+          <div class="col-auto">
+            <q-btn
+              push
+              size="xl"
+              color="positive"
+              text-color="white"
+              icon="add_circle"
+              label="Novo Cliente"
+              class="action-btn positive-action"
+              @click="novoCliente"
+            />
+          </div>
         </div>
       </div>
 
-      <!-- Data atual -->
-      <div class="q-mt-xl">
-        <p :class="$q.dark.isActive ? 'text-white-7 text-body2' : 'text-grey-6 text-body2'">
-          <q-icon name="today" class="q-mr-sm" />
-          {{ dataAtual }}
-        </p>
+      <!-- Seção de Atividade Recente -->
+      <div class="activity-section q-pa-lg">
+        <div class="section-title q-mb-lg">
+          <h3 :class="sectionTitleClass">
+            <q-icon name="history" class="q-mr-sm" />
+            Atividade Recente
+          </h3>
+        </div>
+
+        <q-card flat :class="activityCardClass" class="activity-card">
+          <q-card-section>
+            <div v-if="atividadesRecentes.length === 0" class="text-center q-py-xl">
+              <q-icon name="inbox" size="4rem" :color="$q.dark.isActive ? 'grey-6' : 'grey-4'" />
+              <p :class="emptyStateClass" class="q-mt-md">
+                Nenhuma atividade recente encontrada
+              </p>
+              <p :class="emptySubtitleClass">
+                As ações realizadas no sistema aparecerão aqui
+              </p>
+            </div>
+
+            <q-list v-else separator>
+              <q-item v-for="(atividade, index) in atividadesRecentes" :key="index" class="activity-item">
+                <q-item-section avatar>
+                  <q-avatar :color="atividade.cor" text-color="white" size="40px">
+                    <q-icon :name="atividade.icone" />
+                  </q-avatar>
+                </q-item-section>
+
+                <q-item-section>
+                  <q-item-label :class="activityTitleClass">{{ atividade.titulo }}</q-item-label>
+                  <q-item-label caption :class="activitySubtitleClass">
+                    {{ atividade.descricao }}
+                  </q-item-label>
+                </q-item-section>
+
+                <q-item-section side>
+                  <q-item-label caption :class="activityTimeClass">
+                    {{ atividade.tempo }}
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+        </q-card>
       </div>
     </div>
 
@@ -213,6 +341,7 @@ const $q = useQuasar()
 const totalClientes = ref(0)
 const clientesConcluidos = ref(0)
 const clientesPendentes = ref(0)
+const atividadesRecentes = ref([])
 
 // Estados para foto de perfil
 const fotoPerfil = ref(null)
@@ -221,27 +350,35 @@ const arquivoFoto = ref(null)
 const previewFoto = ref(null)
 const salvandoFoto = ref(false)
 
+// Computed para porcentagem de conclusão
+const percentualConclusao = computed(() => {
+  if (totalClientes.value === 0) return 0
+  return Math.round((clientesConcluidos.value / totalClientes.value) * 100)
+})
+
 // Classes computadas para modo dark/light
 const pageClass = computed(() => {
   return $q.dark.isActive
-    ? 'flex flex-center bg-dark text-white'
-    : 'flex flex-center bg-gradient-primary'
+    ? 'dashboard-page bg-dark'
+    : 'dashboard-page bg-light'
 })
 
 const welcomeTextClass = computed(() => {
   return $q.dark.isActive
-    ? 'welcome-text text-white text-weight-light q-mb-md'
-    : 'welcome-text text-grey-8 text-weight-light q-mb-md'
+    ? 'welcome-text text-white'
+    : 'welcome-text text-grey-8'
 })
 
 const subtitleClass = computed(() => {
   return $q.dark.isActive
-    ? 'subtitle text-white text-h6 q-mb-lg'
-    : 'subtitle text-grey-7 text-h6 q-mb-lg'
+    ? 'subtitle-text text-grey-3'
+    : 'subtitle-text text-grey-6'
 })
 
-const subtitleTextClass = computed(() => {
-  return $q.dark.isActive ? 'text-grey-4 q-mt-md text-body2' : 'text-grey-6 q-mt-md text-body2'
+const sectionTitleClass = computed(() => {
+  return $q.dark.isActive
+    ? 'section-title text-white'
+    : 'section-title text-grey-8'
 })
 
 const avatarColor = computed(() => {
@@ -252,24 +389,50 @@ const avatarTextColor = computed(() => {
   return $q.dark.isActive ? 'white' : 'primary'
 })
 
-// Classes para os cards informativos
-const cardClass = computed(() => {
+// Classes para os cards de estatísticas
+const statsCardClass = computed(() => {
   return $q.dark.isActive
-    ? 'info-card bg-grey-8 text-white'
-    : 'info-card bg-white text-grey-8 shadow-2'
+    ? 'stats-card bg-grey-8 text-white'
+    : 'stats-card bg-white text-grey-8'
 })
 
-const cardTextClass = computed(() => {
+const activityCardClass = computed(() => {
   return $q.dark.isActive
-    ? 'text-h5 text-weight-bold text-white'
-    : 'text-h5 text-weight-bold text-grey-8'
+    ? 'activity-card bg-grey-8 text-white'
+    : 'activity-card bg-white text-grey-8'
 })
 
-const cardSubtitleClass = computed(() => {
-  return $q.dark.isActive ? 'text-subtitle2 text-grey-3' : 'text-subtitle2 text-grey-6'
+const statNumberClass = computed(() => {
+  return $q.dark.isActive
+    ? 'stat-number text-white'
+    : 'stat-number text-grey-8'
 })
 
-// Data atual formatada
+const statLabelClass = computed(() => {
+  return $q.dark.isActive ? 'stat-label text-grey-3' : 'stat-label text-grey-6'
+})
+
+const emptyStateClass = computed(() => {
+  return $q.dark.isActive ? 'text-grey-4 text-h6' : 'text-grey-6 text-h6'
+})
+
+const emptySubtitleClass = computed(() => {
+  return $q.dark.isActive ? 'text-grey-5 text-body2' : 'text-grey-5 text-body2'
+})
+
+const activityTitleClass = computed(() => {
+  return $q.dark.isActive ? 'text-white' : 'text-grey-8'
+})
+
+const activitySubtitleClass = computed(() => {
+  return $q.dark.isActive ? 'text-grey-3' : 'text-grey-6'
+})
+
+const activityTimeClass = computed(() => {
+  return $q.dark.isActive ? 'text-grey-4' : 'text-grey-5'
+})
+
+// Data e hora atuais formatadas
 const dataAtual = computed(() => {
   return new Date().toLocaleDateString('pt-BR', {
     weekday: 'long',
@@ -279,7 +442,14 @@ const dataAtual = computed(() => {
   })
 })
 
-// Navegação
+const horaAtual = computed(() => {
+  return new Date().toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+})
+
+// Navegação e ações
 const navegarParaClientes = () => {
   router.push('/clientes')
 }
@@ -288,6 +458,17 @@ const mostrarEstatisticas = () => {
   $q.notify({
     type: 'info',
     message: 'Funcionalidade de estatísticas em desenvolvimento',
+    icon: 'analytics',
+    position: 'top',
+  })
+}
+
+const novoCliente = () => {
+  router.push('/clientes')
+  $q.notify({
+    type: 'positive',
+    message: 'Redirecionando para adicionar novo cliente',
+    icon: 'person_add',
     position: 'top',
   })
 }
@@ -433,6 +614,39 @@ const cancelarFoto = () => {
   previewFoto.value = null
 }
 
+// Carregar dados simulados
+const carregarDadosSimulados = () => {
+  // Dados de exemplo para demonstração
+  totalClientes.value = 25
+  clientesConcluidos.value = 18
+  clientesPendentes.value = 7
+
+  // Atividades recentes de exemplo
+  atividadesRecentes.value = [
+    {
+      titulo: 'Novo cliente cadastrado',
+      descricao: 'Maria Silva foi adicionada ao sistema',
+      tempo: 'há 2 horas',
+      icone: 'person_add',
+      cor: 'green'
+    },
+    {
+      titulo: 'Status atualizado',
+      descricao: 'Cliente João Santos marcado como concluído',
+      tempo: 'há 4 horas',
+      icone: 'check_circle',
+      cor: 'blue'
+    },
+    {
+      titulo: 'Sistema atualizado',
+      descricao: 'Nova versão do sistema instalada',
+      tempo: 'ontem',
+      icone: 'system_update',
+      cor: 'purple'
+    }
+  ]
+}
+
 // Carregar dados ao montar o componente
 onMounted(() => {
   // Carregar foto de perfil do localStorage
@@ -441,83 +655,65 @@ onMounted(() => {
     fotoPerfil.value = fotoSalva
   }
 
-  // Aqui você pode carregar dados reais do localStorage ou API
-  totalClientes.value = 0
-  clientesConcluidos.value = 0
-  clientesPendentes.value = 0
+  // Carregar dados simulados ou do localStorage
+  const clientesSalvos = localStorage.getItem('clientes')
+  if (clientesSalvos) {
+    try {
+      const clientes = JSON.parse(clientesSalvos)
+      totalClientes.value = clientes.length
+      clientesConcluidos.value = clientes.filter(c => c.status === 'concluido').length
+      clientesPendentes.value = clientes.filter(c => c.status === 'pendente').length
+    } catch (error) {
+      console.error('Erro ao carregar clientes:', error)
+      carregarDadosSimulados()
+    }
+  } else {
+    carregarDadosSimulados()
+  }
 })
 </script>
 
 <style scoped>
-.bg-gradient-primary {
-  background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+/* Background Styles */
+.dashboard-page {
   min-height: 100vh;
+  padding: 0;
 }
 
-.welcome-text {
-  font-size: 3.5rem;
-  line-height: 1.2;
+.bg-light {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
-/* Sombras diferentes para cada modo */
-.dark-mode .welcome-text {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+.bg-dark {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
 }
 
-.light-mode .welcome-text {
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+/* Main Container */
+.main-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.naty-name {
-  background: linear-gradient(45deg, #ff6b35, #f7931e, #ffd700, #ff69b4, #9b59b6);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
-  font-family: 'Pacifico', cursive;
-  animation:
-    natyAnimation 4s ease-in-out infinite,
-    bounce 2s ease-in-out infinite;
-  display: inline-block;
-  transform: scale(1.15);
-  position: relative;
+/* Header Section */
+.header-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-@keyframes natyAnimation {
-  0%,
-  100% {
-    background-position: 0% 50%;
-    transform: scale(1.15) rotate(0deg);
-  }
-  25% {
-    background-position: 100% 0%;
-    transform: scale(1.18) rotate(1deg);
-  }
-  50% {
-    background-position: 100% 100%;
-    transform: scale(1.2) rotate(-1deg);
-  }
-  75% {
-    background-position: 0% 100%;
-    transform: scale(1.18) rotate(1deg);
-  }
+.bg-dark .header-section {
+  background: rgba(30, 30, 60, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@keyframes bounce {
-  0%,
-  20%,
-  50%,
-  80%,
-  100% {
-    transform: translateY(0) scale(1.15);
-  }
-  40% {
-    transform: translateY(-8px) scale(1.18);
-  }
-  60% {
-    transform: translateY(-4px) scale(1.16);
-  }
+.profile-welcome-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .profile-container {
@@ -527,27 +723,16 @@ onMounted(() => {
 
 .profile-avatar {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 5px solid rgba(255, 255, 255, 0.4);
+  border: 4px solid rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
 }
 
-/* Estilos específicos para modo light */
-.light-mode .profile-avatar {
-  border: 5px solid rgba(25, 118, 210, 0.3);
-}
-
 .profile-avatar:hover {
-  transform: scale(1.08) translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05) translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
-.light-mode .profile-avatar:hover {
-  border-color: rgba(25, 118, 210, 0.6);
-  box-shadow: 0 20px 40px rgba(25, 118, 210, 0.3);
-}
-
-.profile-image,
-.preview-image {
+.profile-image {
   object-fit: cover;
   width: 100%;
   height: 100%;
@@ -563,7 +748,6 @@ onMounted(() => {
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
   border-radius: 50%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   opacity: 0;
@@ -575,17 +759,243 @@ onMounted(() => {
   opacity: 1;
 }
 
-.overlay-text {
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-top: 0.5rem;
-  text-align: center;
+/* Welcome Text */
+.welcome-text {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  font-weight: 300;
+  margin: 0;
 }
 
+.naty-name {
+  background: linear-gradient(45deg, #ff6b35, #f7931e, #ffd700, #ff69b4, #9b59b6);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  font-family: 'Pacifico', cursive;
+  animation: natyAnimation 4s ease-in-out infinite;
+  display: inline-block;
+  transform: scale(1.1);
+}
+
+@keyframes natyAnimation {
+  0%, 100% {
+    background-position: 0% 50%;
+    transform: scale(1.1) rotate(0deg);
+  }
+  25% {
+    background-position: 100% 0%;
+    transform: scale(1.13) rotate(1deg);
+  }
+  50% {
+    background-position: 100% 100%;
+    transform: scale(1.15) rotate(-1deg);
+  }
+  75% {
+    background-position: 0% 100%;
+    transform: scale(1.13) rotate(1deg);
+  }
+}
+
+.subtitle-text {
+  font-size: 1.1rem;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+/* System Info Section */
+.system-info-section {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.system-status-card {
+  text-align: right;
+}
+
+.status-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.status-chip {
+  animation: pulse 2s infinite;
+  font-weight: 600;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.time-info p {
+  margin: 5px 0;
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Statistics Section */
+.stats-section {
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  transition: all 0.3s ease;
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.bg-dark .stat-card {
+  background: rgba(30, 30, 60, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bg-light .stat-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.stat-icon-container {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon {
+  color: #1976d2;
+}
+
+.stat-icon.green {
+  color: #4caf50;
+}
+
+.stat-icon.orange {
+  color: #ff9800;
+}
+
+.stat-icon.purple {
+  color: #9c27b0;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Actions Section */
+.actions-section {
+  margin-bottom: 30px;
+}
+
+.action-btn {
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.3px;
+  padding: 15px 30px;
+  min-width: 200px;
+}
+
+.action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.primary-action:hover {
+  box-shadow: 0 12px 30px rgba(25, 118, 210, 0.4);
+}
+
+.secondary-action:hover {
+  box-shadow: 0 12px 30px rgba(156, 39, 176, 0.4);
+}
+
+.positive-action:hover {
+  box-shadow: 0 12px 30px rgba(76, 175, 80, 0.4);
+}
+
+/* Activity Section */
+.activity-section {
+  margin-bottom: 30px;
+}
+
+.activity-card {
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.bg-dark .activity-card {
+  background: rgba(30, 30, 60, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bg-light .activity-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.activity-item {
+  padding: 15px;
+  transition: all 0.2s ease;
+}
+
+.activity-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.bg-dark .activity-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.bg-light .activity-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Preview Container for Photo Dialog */
 .preview-container {
   position: relative;
   display: inline-block;
+}
+
+.preview-image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transition: all 0.3s ease;
 }
 
 .photo-dialog .q-card {
@@ -593,133 +1003,75 @@ onMounted(() => {
   overflow: hidden;
 }
 
-.photo-dialog .preview-image {
-  transition: all 0.3s ease;
-}
-
-.profile-container:hover .avatar-overlay {
-  opacity: 1;
-}
-
-.subtitle {
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.status-indicator {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .profile-welcome-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
   }
-  50% {
-    opacity: 0.7;
+
+  .system-info-section {
+    justify-content: center;
+    margin-top: 20px;
   }
-}
 
-.info-card {
-  backdrop-filter: blur(15px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 20px;
-  transition: all 0.3s ease;
-  min-height: 120px;
-}
+  .system-status-card {
+    text-align: center;
+  }
 
-.info-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-}
-
-/* Estilos específicos para modo light */
-.light-mode .info-card {
-  border: 2px solid rgba(200, 200, 200, 0.3);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.light-mode .info-card:hover {
-  border-color: rgba(25, 118, 210, 0.4);
-  box-shadow: 0 15px 35px rgba(25, 118, 210, 0.2);
-}
-
-.action-btn {
-  border-radius: 30px;
-  transition: all 0.3s ease;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0.5px;
-}
-
-.action-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-/* Dark Mode Styles */
-.dark-mode {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  color: #e0e0e0;
-}
-
-.dark-mode .info-card {
-  background: rgba(30, 30, 60, 0.7);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  color: #e0e0e0;
-}
-
-.dark-mode .info-card:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-}
-
-.dark-mode .q-card {
-  background: rgba(30, 30, 60, 0.8);
-  color: #e0e0e0;
-}
-
-.dark-mode .welcome-text {
-  color: #ffffff;
-}
-
-.dark-mode .subtitle {
-  color: #b0b0b0;
-}
-
-/* Light Mode Styles */
-.light-mode {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  color: #333;
-}
-
-.light-mode .info-card {
-  background: rgba(255, 255, 255, 0.9);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: #333;
-}
-
-.light-mode .q-card {
-  background: rgba(255, 255, 255, 0.95);
-  color: #333;
+  .status-header {
+    align-items: center;
+  }
 }
 
 @media (max-width: 768px) {
+  .main-container {
+    padding: 15px;
+  }
+
   .welcome-text {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
   .naty-name {
     display: block;
-    margin-top: 0.5rem;
+    margin-top: 10px;
   }
 
-  .action-buttons {
-    flex-direction: column;
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
   }
 
   .action-btn {
-    width: 100%;
+    min-width: 100%;
     margin-bottom: 10px;
+  }
+
+  .profile-avatar {
+    width: 100px !important;
+    height: 100px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-text {
+    font-size: 1.8rem;
+  }
+
+  .header-section,
+  .stats-section,
+  .actions-section,
+  .activity-section {
+    padding: 15px;
+  }
+
+  .stat-card {
+    margin-bottom: 15px;
   }
 }
 </style>
